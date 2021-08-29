@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="POST">
+    <p>
+        <label>Domain:</label><br/>
+        <input name="domain" type="text" value="{{ .Domain }}"><br/>
+    </p>
+    <p>
+        <label>Login: <b>{{ .Login }}</b></label><br/>
+        <input min="0" name="loginIndex" type="number" value="{{ .LoginIndex }}"><br/>
+    </p>
+    <p>
+        <label>Password: <b>{{ .Password }}</b></label><br/>
+        <input min="0" name="passwordIndex" type="number" value="{{ .PasswordIndex }}"><br/>
+    </p>
+</form>
+<script>
+    document.addEventListener("change", function () {
+        const form = document.querySelector("form");
+
+        if (form.querySelector('input[name="domain"]').value === '') {
+            return
+        }
+
+        const xhr = new XMLHttpRequest();
+        const data = new FormData(form);
+
+        xhr.open("POST", "/", true);
+        xhr.onreadystatechange = function () {
+            if (+this.readyState === 4 && +this.status === 200) {
+                const res = /<form[\S\s]+<\/form>/.exec(this.responseText);
+                form.outerHTML = res[0];
+            }
+        };
+        xhr.send(data);
+    });
+</script>
+</body>
+</html>
+
